@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FontAwesome } from '@expo/vector-icons'; 
@@ -18,7 +18,6 @@ type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Signup: undefined;
-  // Add other screens here as needed
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
