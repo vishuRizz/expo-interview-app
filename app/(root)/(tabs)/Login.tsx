@@ -37,22 +37,48 @@ const Login = () => {
 
     try {
       setLoading(true);
+      console.log('Starting login process...', { email });
+      
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
+      console.log('Login response:', { data, error });
+
       if (error) {
-        console.log('Login Error:', error);
-        Alert.alert('Login Error', error.message || 'Invalid email or password.');
-      } else if (data.user) {
+        console.error('Login Error:', error.message);
+        Alert.alert(
+          'Login Error', 
+          error.message === 'Invalid login credentials'
+            ? 'Invalid email or password.'
+            : error.message || 'An error occurred during login.'
+        );
+        return;
+      }
+
+      if (data.user) {
+        console.log('Login successful:', data.user);
         Alert.alert('Success', 'Login successful.', [
-          { text: 'OK', onPress: () => navigation.navigate('Home') },
+          { 
+            text: 'OK', 
+            onPress: () => {
+              setEmail('');
+              setPassword('');
+              router.push('/Home');
+            }
+          },
         ]);
+      } else {
+        console.log('No user data returned');
+        Alert.alert('Error', 'No user data returned from login.');
       }
     } catch (error) {
-      console.log('Unexpected Error:', error);
-      Alert.alert('Unexpected Error', 'Something went wrong. Please try again later.');
+      console.error('Unexpected Error:', error);
+      Alert.alert(
+        'Unexpected Error',
+        'Something went wrong. Please try again later.'
+      );
     } finally {
       setLoading(false);
     }
