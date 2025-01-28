@@ -51,10 +51,6 @@ tailwind.config.js
 postcss.config.js
 
 # Supabase
-.env
-.env.local
-.env.development
-.env.production
 .env.*.local
 
 # CocoaPods
@@ -121,3 +117,4 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+config.bat
