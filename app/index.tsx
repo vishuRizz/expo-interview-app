@@ -12,8 +12,7 @@ export default function Index() {
     >
      <Text className="text-3xl font-rubik font-bold mb-20">Welcome</Text>
      <Link href="/signup">Sign up</Link>
-     <Link href="/profile">profile</Link>
-
+     <Link href="/dashboard">Upload your Resume</Link>
     </View>
   );
 }

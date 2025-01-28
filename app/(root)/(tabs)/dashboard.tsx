@@ -6,7 +6,7 @@ import {
     Alert,
     ActivityIndicator,
   } from 'react-native';
-const dashboard = () => {
+const Dashboard = () => {
     return (
         <View>
             <Text>Dashboard</Text>
@@ -14,4 +14,4 @@ const dashboard = () => {
     );
 };
 
-export default dashboard;
+export default Dashboard;

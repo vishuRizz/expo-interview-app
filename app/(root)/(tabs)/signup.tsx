@@ -16,22 +16,46 @@ import 'tailwindcss/tailwind.css';
 
 WebBrowser.maybeCompleteAuthSession();
 
-const FancyAlert = ({ visible, title, message, onClose }: { visible: boolean, title: string, message: string, onClose: () => void }) => (
-  <Modal transparent visible={visible} animationType="fade">
-    <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-      <View className="bg-white p-6 rounded-lg shadow-lg w-11/12">
-        <Text className="text-lg font-bold mb-4 text-center">{title}</Text>
-        <Text className="text-gray-700 mb-6 text-center">{message}</Text>
-        <TouchableOpacity
-          onPress={onClose}
-          className="bg-black p-3 rounded-lg"
-        >
-          <Text className="text-white text-center font-bold">OK</Text>
-        </TouchableOpacity>
+const FancyAlert = ({
+  visible,
+  title,
+  message,
+  onClose,
+  onAction,
+}: {
+  visible: boolean;
+  title: string;
+  message: string;
+  onClose: () => void;
+  onAction?: () => void;
+}) => {
+  useEffect(() => {
+    // Navigate to dashboard if title or message indicates success
+    if (visible && title === 'Success') {
+      router.push('/dashboard');
+    }
+  }, [visible, title]);
+
+  return (
+    <Modal transparent visible={visible} animationType="fade">
+      <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+        <View className="bg-white p-6 rounded-lg shadow-lg w-11/12">
+          <Text className="text-lg font-bold mb-4 text-center">{title}</Text>
+          <Text className="text-gray-700 mb-6 text-center">{message}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              onClose();
+              if (onAction) onAction(); // Trigger action if provided
+            }}
+            className="bg-black p-3 rounded-lg"
+          >
+            <Text className="text-white text-center font-bold">OK</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -41,16 +65,15 @@ const Signup = () => {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertContent, setAlertContent] = useState({ title: '', message: '' });
 
-  const showAlert = (title: string, message: string, p0?: () => void) => {
+  const showAlert = (title: string, message: string, onAction?: () => void) => {
     setAlertContent({ title, message });
     setAlertVisible(true);
   };
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-   clientId: '55925846579-pioue5las7ha8hcdpugampkvele4jnqo.apps.googleusercontent.com',
+    clientId: '55925846579-pioue5las7ha8hcdpugampkvele4jnqo.apps.googleusercontent.com',
     androidClientId: '55925846579-pioue5las7ha8hcdpugampkvele4jnqo.apps.googleusercontent.com',
     redirectUri: 'https://wupahhhetxyijbknikff.supabase.co/auth/v1/callback',
-
   });
 
   useEffect(() => {
@@ -69,7 +92,7 @@ const Signup = () => {
             showAlert('Google Signup Error', error.message || 'An error occurred.');
           } else {
             showAlert('Success', 'Google signup successful!');
-            router.push('/Home');
+            router.push('/dashboard');
           }
         } catch (err) {
           console.log('Google Auth Error:', err);
@@ -129,9 +152,7 @@ const Signup = () => {
           return;
         }
 
-        showAlert('Success', 'Check your email for the confirmation link.', () =>
-          router.push('/dashboard')
-        );
+        showAlert('Success', 'Check your email for the confirmation link.');
       }
     } catch (err) {
       console.log('Unexpected Error:', err);
@@ -148,6 +169,7 @@ const Signup = () => {
         title={alertContent.title}
         message={alertContent.message}
         onClose={() => setAlertVisible(false)}
+        onAction={() => setAlertVisible(false)}
       />
       <View className="flex-1 justify-between px-6 py-12">
         <View>
